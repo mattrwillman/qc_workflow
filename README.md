@@ -1,8 +1,7 @@
 # qc_workflow
 
 FastQC + mapping-parameter QC sweep for evaluating a new tagmentation
-library prep. Standalone project (sibling to `ibspy` and other repos under
-`GitHub/`) — no shared config or state with any other pipeline.
+library prep.
 
 ## What it does
 
@@ -106,3 +105,8 @@ results/
   summary/coverage_summary.tsv
   multiqc/qc_report.html
 ```
+
+## Development notes
+
+Developed with [Claude Code](https://claude.com/claude-code) (Anthropic),
+under the workflow author's direction and review.
