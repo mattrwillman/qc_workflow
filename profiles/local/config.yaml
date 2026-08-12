@@ -1,0 +1,11 @@
+cores: 8
+jobs: 4
+latency-wait: 60
+rerun-incomplete: true
+keep-going: true
+printshellcmds: true
+use-conda: true
+
+default-resources:
+  - mem_mb=8000
+  - runtime=60

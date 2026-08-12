@@ -1,0 +1,11 @@
+# Controller environment: activate this to run `snakemake` itself.
+# Per-rule tool dependencies (fastqc, bwa, bcftools, ...) live in
+# envs/qc.yml and are pulled in automatically via --use-conda.
+name: qc_workflow
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - snakemake>=8.0
+  - snakemake-executor-plugin-cluster-generic

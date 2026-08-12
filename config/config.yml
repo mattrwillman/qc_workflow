@@ -1,0 +1,62 @@
+# qc_workflow config — read QC + mapping-parameter sweep for a new
+# tagmentation library prep.
+
+# Directory scanned for raw fastq pairs. Samples are discovered by matching
+# r1_suffix / r2_suffix against files in this directory (non-recursive).
+fastq_dir: "/90daydata/gbru_wheat2/Illumina_WGS/gbg-lines_26_MD_skim"
+r1_suffix: "_R1_001.fastq.gz"
+r2_suffix: "_R2_001.fastq.gz"
+
+reference:
+  fasta: "/project/gbru_wheat2/ref/Refseq1.0_IWGSC/iwgsc_refseqv1.0_all_chromosomes/161010_Chinese_Spring_v1.0_pseudomolecules.fasta"
+
+# Window size (bp) used for both SNP density and read-coverage density
+# plots, so the two line up on the same genomic bins.
+density_window_bp: 1000000
+
+# Which aligners to run. Each sample is mapped once per (aligner, param_set)
+# combination so mapping-quality metrics can be compared side by side.
+aligners:
+  - bwa_mem
+#  - bowtie2
+
+# bwa mem parameter sets to sweep. Empty string = tool defaults.
+# -k: seed length, -A/-B: match/mismatch score, -O: gap open penalty.
+# Tagmentation libraries have variable, sometimes short, insert sizes, so
+# seed length and mismatch tolerance are the most informative knobs to test.
+bwa_mem_params:
+  default: ""
+  short_seed: "-k 15"
+  strict: "-B 8 -O 12"
+
+# bowtie2 parameter sets to sweep.
+bowtie2_params:
+  default: "--sensitive"
+  local: "--local --very-sensitive-local"
+  strict_end_to_end: "--end-to-end --very-sensitive"
+
+# All profiles stay on the atlas partition (48 cpu / 384 GB / 14 days) —
+# no rule here is expected to need bigmem. Sized generously (well above
+# estimated need) to avoid OOM retries, while staying under atlas's 384 GB
+# cap with a safe margin.
+resource_profiles:
+  default:
+    threads: 8
+    mem_mb: 64000
+    runtime: 1440
+    partition: atlas
+
+  # bwa index / bowtie2-build on the ~14.5 Gb hexaploid wheat genome.
+  genome_index:
+    threads: 16
+    mem_mb: 350000
+    runtime: 4320
+    partition: atlas
+
+  # bwa mem / bowtie2 alignment against the ~14.5 Gb wheat genome. Sized
+  # well above the ~24-35 GB estimated need to avoid OOM retries.
+  mapping:
+    threads: 8
+    mem_mb: 250000
+    runtime: 2880
+    partition: atlas
